@@ -87,7 +87,7 @@ enum HSOL_DBL_OPTIONS {
     DBLOPT_PERTURB_BASE,
     DBLOPT_PAMI_CUTOFF,
     DBLOPT_OBJ_UB,         // For SCIP
-    DBLOPT_COUNT    
+    DBLOPT_COUNT
 };
 
 enum HSOL_STR_OPTIONS {
@@ -209,7 +209,7 @@ public:
     void check_load_fromArrays();
     void check_load_fromPostsolve();
 #endif
-    
+
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // Esoterica!
     // Initialise the random vectors required by hsol
@@ -218,7 +218,7 @@ public:
     // Logical check of double being +Infinity
     bool hsol_isInfinity(double val);
 
-    // Shift the objective 
+    // Shift the objective
     void shiftObjectiveValue(double shift);
 
     // Increment numberIteration (here!) and (possibly) store the pivots for debugging NLA
@@ -228,7 +228,7 @@ public:
     void writePivots(const char *suffix);
 #endif
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
-    
+
     // Utilities to get objective, solution and basis: all just copy what's there with no re-evaluation!
     double util_getObjectiveValue();
     void util_getPrimalDualValues(vector<double>& colValue, vector<double>& colDual,
@@ -314,10 +314,10 @@ public:
     int problemPerturbed;
 
     // Possibly prevent reinversion on optimality in phase 1 or phase 2
-    const bool InvertIfRowOutNeg = true;
+    const bool InvertIfRowOutNeg;
 
-    const bool forbidSuperBasic = true;
-    
+    const bool forbidSuperBasic;
+
     // Number of basic logicals - allows logical basis to be deduced
     int numBasicLogicals;
 
@@ -342,17 +342,17 @@ public:
 
     // Model and solver status flags
     // First the actions---to be passed as parameters to update_mlFg
-    const int mlFg_action_TransposeLP = 0;
-    const int mlFg_action_ScaleLP =     1;
-    const int mlFg_action_ShuffleLP =   2;
-    const int mlFg_action_NewCosts =    3;
-    const int mlFg_action_NewBounds =   4;
-    const int mlFg_action_NewBasis =    5;
-    const int mlFg_action_NewCols =     6;
-    const int mlFg_action_NewRows =     7;
-    const int mlFg_action_DelCols =     8;
-    const int mlFg_action_DelRows =     9;
-    const int mlFg_action_DelRowsBasisOK = 10;
+    const int mlFg_action_TransposeLP;
+    const int mlFg_action_ScaleLP;
+    const int mlFg_action_ShuffleLP;
+    const int mlFg_action_NewCosts;
+    const int mlFg_action_NewBounds;
+    const int mlFg_action_NewBasis;
+    const int mlFg_action_NewCols;
+    const int mlFg_action_NewRows;
+    const int mlFg_action_DelCols;
+    const int mlFg_action_DelRows;
+    const int mlFg_action_DelRowsBasisOK;
 
     int mlFg_transposedLP;
     int mlFg_scaledLP;
@@ -392,7 +392,7 @@ public:
     //
     // Need to know of any saved bounds in the event of scaling being performed
     int mlFg_haveSavedBounds;
-  
+
 public:
     // The original model
     int numCol;
@@ -422,14 +422,14 @@ public:
 
     // workCost: Originally just costs from the model but, in solve(), may
     // be perturbed or set to alternative values in Phase I??
-    // 
+    //
     // workDual: Values of the dual variables corresponding to
     // workCost. Not known until solve() is called since B^{-1} is
     // required to compute them. Knowledge of them is indicated by
     // mlFg_haveNonbasicDuals.
-    // 
+    //
     // workShift: WTF
-    // 
+    //
     vector<double> workCost;
     vector<double> workDual;
     vector<double> workShift;
@@ -437,12 +437,12 @@ public:
     // workLower/workUpper: Originally just lower (upper) bounds from
     // the model but, in solve(), may be perturbed or set to
     // alternative values in Phase I??
-    // 
+    //
     // workRange: Distance between lower and upper bounds
-    // 
+    //
     // workValue: Values of the nonbasic variables corresponding to
     // workLower/workUpper and the basis. Always known.
-    // 
+    //
     vector<double> workLower;
     vector<double> workUpper;
     vector<double> workRange;
@@ -473,7 +473,7 @@ public:
     vector<int> historyColumnOut;
     vector<double> historyAlpha;
 #endif
-    
+
     //Implied bounds from presolve
     vector<double> primalColLowerImplied;
     vector<double> primalColUpperImplied;

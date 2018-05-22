@@ -33,7 +33,7 @@ void HinOut::readDataColumnWise() {
 	ifstream f;
 	int i;
 
-	f.open (fileIn, ios::in );
+	f.open (fileIn.c_str(), ios::in );
 
 	//counts
 	f >> numCol ;
@@ -125,7 +125,7 @@ void HinOut::writeDataColumnWise() {
 	ofstream f;
 	int i;
 
-	f.open (fileOut, ios::out );
+	f.open (fileOut.c_str(), ios::out );
 
 	//counts
 	f << onumCol << endl;
@@ -256,7 +256,7 @@ void HinOut::compareData(int lvl) {
 
 	//Aindex and Avalue can differ in their order:
 	for (int j=0; j<numCol; j++) {
-		vector<pair<int, double>> columnA, columnOA;
+		vector<pair<int, double> > columnA, columnOA;
 		for (int k=Astart[j]; k<Astart[j+1]; k++) {
 			pair<int, double> p(Aindex[k], Avalue[k]);
 			columnA.push_back(p);
@@ -265,13 +265,13 @@ void HinOut::compareData(int lvl) {
 		for (int k=oAstart[j]; k<oAstart[j+1]; k++) {
 			//pair<int, double> p(oAindex[k], oAvalue[k]);
 			for (size_t l=0;l < columnA.size(); l++)
-				if (get<0>(columnA[l])==oAindex[k]) {
-					if (get<1>(columnA[l])==oAvalue[k]) {
+				if ((columnA[l]).first==oAindex[k]) {
+					if ((columnA[l]).second==oAvalue[k]) {
 						columnA.erase(columnA.begin() + l);
 						continue;
 					}
 					else {
-						cout<<"mismatch in row "<<Aindex[k]<<" col "<<j<< " in Avalue: "<< get<1>(columnA[i]) << " in oAvalue: "<< oAvalue[k] <<endl;
+						cout<<"mismatch in row "<<Aindex[k]<<" col "<<j<< " in Avalue: "<< (columnA[i]).second << " in oAvalue: "<< oAvalue[k] <<endl;
 					}
 				}
 			//columnOA.push_back(p);

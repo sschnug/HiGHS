@@ -30,6 +30,19 @@ using namespace std;
 // allocate and populate (where possible) work* arrays and
 // allocate basis* arrays
 HModel::HModel()
+  : InvertIfRowOutNeg(true),
+    forbidSuperBasic(true),
+    mlFg_action_TransposeLP(0),
+    mlFg_action_ScaleLP(1),
+    mlFg_action_ShuffleLP(2),
+    mlFg_action_NewCosts(3),
+    mlFg_action_NewBounds(4),
+    mlFg_action_NewBasis(5),
+    mlFg_action_NewCols(6),
+    mlFg_action_NewRows(7),
+    mlFg_action_DelCols(8),
+    mlFg_action_DelRows(9),
+    mlFg_action_DelRowsBasisOK(10)
 {
   intOption[INTOPT_PRINT_FLAG] = 0;     // no print
   intOption[INTOPT_TRANSPOSE_FLAG] = 0; // no transpose

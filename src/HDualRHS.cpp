@@ -127,7 +127,7 @@ void HDualRHS::choose_multi_global(int *chIndex, int *chCount, int chLimit)
     chIndex[i] = -1;
 
   const unsigned int chooseCHECK = chLimit * 2;
-  vector<pair<double, int>> setP;
+  vector<pair<double, int> > setP;
   setP.reserve(chooseCHECK);
 
   if (workCount < 0)

@@ -56,10 +56,10 @@ int solveExternalPresolve(const char *fileName);
 double presolve(HModel &mod, double &time);
 //int testIO(const char *filename);
 
-void printHelp(std::string execName) {
+static inline void printHelp(std::string execName) {
 
   fprintf(stderr, "Usage: %s [options] -f fileName \n\n", execName.c_str());
-  fprintf(stderr, 
+  fprintf(stderr,
               "Options: \n"
                 "  -p On     : use presolve\n"
                 "  -c mode   : set crash mode to mode. Values:\n"

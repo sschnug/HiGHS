@@ -66,6 +66,7 @@ enum HDUAL_VARIANT
 class HDual
 {
 public:
+  HDual();
   void solve(HModel *model, int variant = 0, int num_threads = 1);
 
 public:
@@ -133,13 +134,13 @@ public:
   void an_iz_vr_v();
 
   // Variant choice
-  int dual_variant = 0;
-  int EdWt_Mode = 0;
-  int Crash_Mode = 0;
-  int Presolve_Mode = 0;
+  int dual_variant;
+  int EdWt_Mode;
+  int Crash_Mode;
+  int Presolve_Mode;
 
   bool SolveBailout;
-  double TimeLimitValue = 0;
+  double TimeLimitValue;
 
   // Analysis of rebuilds
   int totalRebuilds;

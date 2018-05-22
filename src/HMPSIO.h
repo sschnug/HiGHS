@@ -8,9 +8,10 @@
 #include <iostream>
 #include <map>
 #include <vector>
+#include <stdlib.h>
 using namespace std;
 
-int readMPS_dense_cpp(const char *filename, int mxNumRow, int mxNumCol, 
+int readMPS_dense_cpp(const char *filename, int mxNumRow, int mxNumCol,
 		      int* numRow_p, int* numCol_p, int* objSense_p, double* objOffset_p,
 		      double ** A_cw_p,
 		      double ** rhs_p, double ** cost_p, double ** lb_p, double ** ub_p,

@@ -32,7 +32,7 @@ public:
  	void initializeVectors();
 	void setProblemStatus(const int s);
  	void reportTimes();
- 	
+
  	//new bounds on primal variables for implied free detection
 	vector<double> implColLower;
     vector<double> implColUpper;
@@ -56,18 +56,18 @@ public:
     HTimerPre timer; //holds enum for main presolve rules
 
     enum stat {
-      Unset = 0, 
+      Unset = 0,
     	Infeasible = 1,
     	Unbounded = 2,
     	Empty = 3,
       Optimal = 4,
     };
 
-private: 
+private:
     bool hasChange;
-    int status=0;  //0 is unassigned, see enum stat
+    int status;  //0 is unassigned, see enum stat
 
-    list<int> singRow;    		//singleton rows 
+    list<int> singRow;    		//singleton rows
 	list<int> singCol;    		//singleton columns
 
 	//original data
@@ -152,10 +152,10 @@ private:
     vector<int> countRemovedRows;
     vector<int> countRemovedCols;
     double tol;
-    
+
     //postsolve
     bool noPostSolve;
-    
+
     void addChange(int type, int row, int col);
     void fillStackRowBounds(int col);
 	void setKKTcheckerData();

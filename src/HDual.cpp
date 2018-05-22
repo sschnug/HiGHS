@@ -14,6 +14,14 @@
 #include <stdexcept>
 using namespace std;
 
+HDual::HDual()
+  : dual_variant(0),
+    EdWt_Mode(0),
+    Crash_Mode(0),
+    Presolve_Mode(0),
+    TimeLimitValue(0)
+{}
+
 void HDual::solve(HModel *ptr_model, int variant, int num_threads)
 {
   //  printf("\nEntering solve(HModel *ptr_model, int variant, int num_threads)\n");cout<<flush;
@@ -500,7 +508,7 @@ void HDual::solve_phase1()
 #ifdef SCIP_dev
 			  printf("HDual::solve_phase1: %g = Objective > dblOption[DBLOPT_OBJ_UB]\n", model->objective, model->dblOption[DBLOPT_OBJ_UB]);
 #endif
-			  model->problemStatus = LP_Status_ObjUB; 
+			  model->problemStatus = LP_Status_ObjUB;
                           break;
 			}
 			*/
