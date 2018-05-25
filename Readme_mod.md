@@ -202,3 +202,26 @@ Remove some unneeded parallel code
 #### HDual.cpp
 - removed usage of above parallel functions
 - hardcoded dual-variant (comment-marker: SDS)
+
+## Phase 8
+Remove some compiler-warnings
+
+### Details
+
+#### SCIPY_INTF.cpp
+- loop-var-type changed
+
+#### KktCheck.h
+- remove debug-funcs printA, printAR
+
+#### KktCheck.cpp
+- removed usage of above (was outcommented)
+
+#### KktChStep.cpp
+- removed printA, printAR
+
+#### HPreData.h
+- removed print + printAR
+
+#### HPreData.cpp
+- removed defs of above

@@ -3,56 +3,6 @@
 
 #include <vector>
 
-
-void KktCheck::printAR() {
-	cout<<"N="<<numCol<<",  M="<<numRow<<",  NZ= "<<ARstart[numRow]<<'\n';
-
-	char buff [4];
-	cout<<"\n-----cost-----\n";
-	for (size_t i=0;i<colCost.size();i++) {
-		sprintf(buff, "%2.1g ", colCost[i]);
-		cout<<std::setw(5)<<buff;
-	}
-	cout<<endl;
-	cout<<"------AR | b----KktCheck-\n";
-	for (int i=0;i<numRow;i++) {
-		for (int j=0;j<numCol;j++) {
-
-			int ind = ARstart[i];
-			while (ARindex[ind]!=j && ind<ARstart[i+1])
-				ind++;
-			//if a_ij is nonzero print
-			if (ARindex[ind]==j && ind<ARstart[i+1])
-			{
-				sprintf(buff, "%2.1g ", ARvalue[ind]);
-				cout<<std::setw(5)<<buff;
-				}
-			else cout<<std::setw(5)<<"   ";
-
-		}
-		cout<<"  |   "<<std::setw(5)<<rowLower[i]<<" < < "<<rowUpper[i]<<endl;
-	}
-	cout<<endl;
-	cout<<"------l------\n";
-	for (int i=0;i<numCol;i++) {
-		if (colLower[i]>-HSOL_CONST_INF)
-			sprintf(buff, "%2.1g ", colLower[i]);
-		else
-			sprintf(buff, "-inf");
-		cout<<setw(5)<<buff;
-	}
-	cout<<endl;
-	cout<<"------u------\n";
-	for (int i=0;i<numCol;i++) {
-		if (colUpper[i]<HSOL_CONST_INF)
-			sprintf(buff, "%2.1g ", colUpper[i]);
-		else
-			sprintf(buff, "inf");
-		cout<<setw(5)<<buff;
-	}
-	cout<<endl;
-}
-
 void KktCheck::makeARCopy() {
 	tol = 0.00001;
 	// Make a AR copy
@@ -306,7 +256,6 @@ void KktCheck::checkKKT() {
 
 
 	makeARCopy();
-	//printAR();printSol();
 	chPrimalBounds() ;
 	chPrimalFeas();
 	chDualFeas();

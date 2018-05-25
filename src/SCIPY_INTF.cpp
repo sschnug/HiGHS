@@ -1,5 +1,6 @@
 #include <iostream>   //  TODO
 #include <vector>
+#include <cstddef>
 #include "SCIPY_INTF.h"
 
 /* Modified function from "HApp.cpp"
@@ -173,13 +174,13 @@ void solveLP(int *probStatus, int *basisStatus,
   // std::cout << std::endl;
 
   // Replace non-finite values with project-specific constants
-  for(int i=0; i<XcolLowerInf.size(); ++i)
+  for(std::size_t i=0; i<XcolLowerInf.size(); ++i)
     XcolLower[XcolLowerInf[i]] = -HSOL_CONST_INF;
-  for(int i=0; i<XcolUpperInf.size(); ++i)
+  for(std::size_t i=0; i<XcolUpperInf.size(); ++i)
     XcolUpper[XcolUpperInf[i]] = HSOL_CONST_INF;
-  for(int i=0; i<XrowLowerInf.size(); ++i)
+  for(std::size_t i=0; i<XrowLowerInf.size(); ++i)
     XrowLower[XrowLowerInf[i]] = -HSOL_CONST_INF;
-  for(int i=0; i<XrowUpperInf.size(); ++i)
+  for(std::size_t i=0; i<XrowUpperInf.size(); ++i)
     XrowUpper[XrowUpperInf[i]] = HSOL_CONST_INF;
 
   // std::cout << "AFTER" << std::endl;

@@ -468,9 +468,6 @@ void KktChStep::resizeProblemMatrix(KktCheck& checker) {
     		//b[k] = Rb[i];
     		k++;
 	    }
-
-
-
 }
 
 void KktChStep::makeKKTCheck() {
@@ -507,89 +504,6 @@ void KktChStep::makeKKTCheck() {
     		k++;
 	    }
 
-
-
 	checker.passSolution(cV, cD, rD);
 	checker.checkKKT();
 	}
-
-void KktChStep::printA() {
-	char buff [4];
-	cout<<"\n-----cost-----\n";
-
-	for (int i=0;i<numCol;i++) {
-		sprintf(buff, "%2.1g ", colCost[i]);
-		cout<<std::setw(5)<<buff;
-	}
-	cout<<endl;
-	cout<<"------A-|-b-----\n";
-	for (int i=0;i<numRow;i++) {
-		for (int j=0;j<numCol;j++) {
-
-			int ind = Astart[j];
-			while (Aindex[ind]!=i && ind<Astart[j+1])
-				ind++;
-			//if a_ij is nonzero print
-			if (Aindex[ind]==i && ind<Astart[j+1])
-			{
-				sprintf(buff, "%2.1g ", Avalue[ind]);
-				cout<<std::setw(5)<<buff;
-				}
-			else cout<<std::setw(5)<<"   ";
-
-		}
-		cout<<"  |   "<<std::setw(5)<<RrowLower[i]<<" < < "<<RrowUpper[i]<<endl;
-	}
-	cout<<"------l------\n";
-	for (int i=0;i<numCol;i++) {
-		if (colLower[i]>-HSOL_CONST_INF)
-			sprintf(buff, "%2.1g ", colLower[i]);
-		else
-			sprintf(buff, "-inf");
-		cout<<setw(5)<<buff;
-	}
-	cout<<endl;
-	cout<<"------u------\n";
-	for (int i=0;i<numCol;i++) {
-		if (colUpper[i]<HSOL_CONST_INF)
-			sprintf(buff, "%2.1g ", colUpper[i]);
-		else
-			sprintf(buff, "inf");
-		cout<<setw(5)<<buff;
-	}
-	cout<<endl;
-
-}
-
-void KktChStep::printAR() {
-	char buff [4];
-	cout<<"\n-----cost-----\n";
-
-	for (int i=0;i<numCol;i++) {
-		sprintf(buff, "%2.1g ", colCost[i]);
-		cout<<std::setw(5)<<buff;
-	}
-	cout<<endl;
-	cout<<"------AR-|-b-----\n";
-	for (int i=0;i<RnumRow;i++) {
-		for (int j=0;j<RnumCol;j++) {
-
-			int ind = ARstart[i];
-			while (ARindex[ind]!=j && ind<ARstart[i+1])
-				ind++;
-			//if a_ij is nonzero print
-			if (ARindex[ind]==j && ind<ARstart[i+1])
-			{
-				sprintf(buff, "%2.1g ", ARvalue[ind]);
-				cout<<std::setw(5)<<buff;
-				}
-			else cout<<std::setw(5)<<"   ";
-
-		}
-
-		cout<<"  |   "<<std::setw(5)<<RrowLower[i]<<" < < "<<RrowUpper[i]<<endl;
-
-	}
-
-	cout<<endl;
-}

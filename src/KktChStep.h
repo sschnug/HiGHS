@@ -17,16 +17,16 @@
 
 class KktChStep {
 	//model: full matrix in AR (row-wise) and working copy(column-wise)
-	
+
 	int RnumCol;
     int RnumRow;
 public:
 	vector<int> ARstart;
     vector<int> ARindex;
     vector<double> ARvalue;
-    
+
 private:
-    //the 4 vectors below always of full length 
+    //the 4 vectors below always of full length
     vector<double> RcolCost;
     vector<double> RcolLower;
     vector<double> RcolUpper;
@@ -36,11 +36,7 @@ private:
 
 	vector<int> flagCol;
 	vector<int> flagRow;
-
-	//testing 
-	void printA();
-	void printAR();
-		
+	
 	public:
 	//data for actual check
 	int numCol;
@@ -53,12 +49,12 @@ private:
     vector<double> colUpper;
 	vector<double> rowLower;
 	vector<double> rowUpper;
-	int print; 
-	
+	int print;
+
 	//solution
 	vector<double> colValue;
-	vector<double> colDual;  
-	vector<double> rowDual;  
+	vector<double> colDual;
+	vector<double> rowDual;
 
 	//stack<vector<double> > bs;
 	stack<vector<pair<int, double> > > rLowers;
@@ -67,7 +63,7 @@ private:
 	stack<vector<pair<int, double> > > cUppers;
 	stack<vector<pair<int, double> > > costs;
 	//stack<double> M;
-	
+
 	void passSolution(const vector<double>& colVal, const vector<double>& colDu, const vector<double>& rDu);
 	//full matrix
 	void setMatrixAR(int nCol, int nRow, const vector<int>& ARstart_, const  vector<int>& ARindex_, const  vector<double>& ARvalue_);
@@ -77,6 +73,6 @@ private:
 	void makeKKTCheck();
 	void resizeProblemMatrix(KktCheck& checker);
 	void addCost(int col, double value);
-	
+
 };
 #endif /* KKTCHSTEP_H_ */
