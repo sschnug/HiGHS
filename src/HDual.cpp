@@ -26,7 +26,8 @@ void HDual::solve(HModel *ptr_model, int variant, int num_threads)
 {
   //  printf("\nEntering solve(HModel *ptr_model, int variant, int num_threads)\n");cout<<flush;
   assert(ptr_model != NULL);
-  dual_variant = variant;
+  // SDS: dual_variant now hardcoded -> serial!
+  dual_variant = 0;
   model = ptr_model;
   //  printf("HDual::solve - model->mlFg_Report() 1\n");cout<<flush; model->mlFg_Report();cout<<flush;
   // Setup two work buffers in model required for solve()
@@ -354,19 +355,8 @@ void HDual::solve_phase1()
     rebuild();
     for (;;)
     {
-      switch (dual_variant)
-      {
-      default:
-      case HDUAL_VARIANT_PLAIN:
-        iterate();
-        break;
-      case HDUAL_VARIANT_TASKS:
-        iterate_tasks();
-        break;
-      case HDUAL_VARIANT_MULTI:
-        iterate_multi();
-        break;
-      }
+      // Removed parallel approaches
+      iterate();
       if (invertHint)
         break;
       //printf("HDual::solve_phase1: Iter = %d; Objective = %g\n", model->numberIteration, model->objective);
@@ -462,19 +452,8 @@ void HDual::solve_phase2()
       // Inner loop of solve_phase2()
       // Performs one iteration in case HDUAL_VARIANT_PLAIN:
       model->util_reportSolverProgress();
-      switch (dual_variant)
-      {
-      default:
-      case HDUAL_VARIANT_PLAIN:
-        iterate();
-        break;
-      case HDUAL_VARIANT_TASKS:
-        iterate_tasks();
-        break;
-      case HDUAL_VARIANT_MULTI:
-        iterate_multi();
-        break;
-      }
+      // Removed parallel approaches
+      iterate();
       //invertHint can be true for various reasons see HModel.h
       if (invertHint)
         break;
@@ -672,47 +651,6 @@ void HDual::iterate()
   updatePivots();
 }
 
-void HDual::iterate_tasks()
-{
-  slice_PRICE = 1;
-
-  // Group 1
-  chooseRow();
-
-  // Disable slice when too sparse
-  if (1.0 * row_ep.count / numRow < 0.01)
-    slice_PRICE = 0;
-
-  model->timer.recordStart(HTICK_GROUP1);
-#pragma omp parallel
-#pragma omp single
-  {
-#pragma omp task
-    {
-      columnDSE.copy(&row_ep);
-      updateFtranDSE(&columnDSE);
-    }
-#pragma omp task
-    {
-      if (slice_PRICE)
-        chooseColumn_slice(&row_ep);
-      else
-        chooseColumn(&row_ep);
-#pragma omp task
-      updateFtranBFRT();
-#pragma omp task
-      updateFtran();
-#pragma omp taskwait
-    }
-  }
-  model->timer.recordFinish(HTICK_GROUP1);
-
-  updateVerify();
-  updateDual();
-  updatePrimal(&columnDSE);
-  updatePivots();
-}
-
 void HDual::chooseRow()
 {
   if (invertHint)
@@ -862,61 +800,6 @@ void HDual::chooseColumn(HVector *row_ep)
         printf("!!NEW DEVEX FRAMEWORK!!\n");
     dualRHS.workEdWt[rowOut] = tru_dvx_wt_o_rowOut;
   }
-}
-
-void HDual::chooseColumn_slice(HVector *row_ep)
-{
-  if (invertHint)
-    return;
-
-  model->timer.recordStart(HTICK_CHUZC1);
-  dualRow.clear();
-  dualRow.workDelta = deltaPrimal;
-  dualRow.create_Freemove(row_ep);
-
-  // Row_ep:         PACK + CC1
-#pragma omp task
-  {
-
-    dualRow.choose_makepack(row_ep, numCol);
-    dualRow.choose_possible();
-  }
-
-  // Row_ap: PRICE + PACK + CC1
-  for (int i = 0; i < slice_num; i++)
-  {
-#pragma omp task
-    {
-      slice_row_ap[i].clear();
-      slice_matrix[i].price_by_row(slice_row_ap[i], *row_ep);
-
-      slice_dualRow[i].clear();
-      slice_dualRow[i].workDelta = deltaPrimal;
-      slice_dualRow[i].choose_makepack(&slice_row_ap[i], slice_start[i]);
-      slice_dualRow[i].choose_possible();
-    }
-  }
-#pragma omp taskwait
-
-  // Join CC1 results here
-  for (int i = 0; i < slice_num; i++)
-    dualRow.choose_joinpack(&slice_dualRow[i]);
-
-  // Infeasible we created before
-  columnIn = -1;
-  if (dualRow.workTheta <= 0 || dualRow.workCount == 0)
-  {
-    invertHint = invertHint_possiblyDualUnbounded; // Was 1
-    return;
-  }
-  model->timer.recordFinish(HTICK_CHUZC1);
-
-  // Choose column 2, This only happens if didn't go out
-  dualRow.choose_final();
-  dualRow.delete_Freemove();
-  columnIn = dualRow.workPivot;
-  alphaRow = dualRow.workAlpha;
-  thetaDual = dualRow.workTheta;
 }
 
 void HDual::updateFtranBFRT()

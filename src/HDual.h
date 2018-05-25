@@ -80,13 +80,10 @@ public:
   void cleanup();
 
   void iterate();
-  void iterate_tasks();
-  void iterate_multi();
 
   void chooseRow();
 
   void chooseColumn(HVector *row_ep);
-  void chooseColumn_slice(HVector *row_ep);
 
   void updateFtranBFRT();
   void updateFtran();

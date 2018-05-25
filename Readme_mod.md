@@ -166,6 +166,8 @@ Remove parallel code
 ## Phase 6
 Remove unneeded (dev-)code
 
+### Details
+
 #### HAPI.cpp
 - #ifdef JAJH_dev removed
 
@@ -188,3 +190,15 @@ Remove unneeded (dev-)code
 
 #### HPrimal.cpp
 - some #ifdef JAJH dev removed
+
+## Phase 7
+Remove some unneeded parallel code
+
+### Details
+
+#### HDual.h
+- removed method-defs of iterate_tasks and iterate_multi
+
+#### HDual.cpp
+- removed usage of above parallel functions
+- hardcoded dual-variant (comment-marker: SDS)
