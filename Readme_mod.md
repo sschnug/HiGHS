@@ -153,3 +153,6 @@ Add scipy entry-point.
 
 #### SCIPY_INTF.cpp
 - added
+
+## Phase 4
+Removed folder /check
