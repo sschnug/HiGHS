@@ -76,6 +76,10 @@ void solve_fromArrays_mod(int *probStatus, int *basisStatus,
                           const bool preSolve, const bool verbose)
 {
   HModel model;
+
+  if(verbose)
+    model.intOption[INTOPT_PRINT_FLAG] = 1;
+
   model.load_fromArrays(XnumCol, XobjSense, XcolCost, XcolLower, XcolUpper,
                         XnumRow, XrowLower, XrowUpper,
                         XnumNz, XAstart, XAindex, XAvalue);
