@@ -28,12 +28,6 @@ void HDual::solve(HModel *ptr_model, int variant, int num_threads)
   assert(ptr_model != NULL);
   dual_variant = variant;
   model = ptr_model;
-#ifdef JAJH_dev
-  printf("model->mlFg_Report() 1\n");
-  cout << flush;
-  model->mlFg_Report();
-  cout << flush;
-#endif
   //  printf("HDual::solve - model->mlFg_Report() 1\n");cout<<flush; model->mlFg_Report();cout<<flush;
   // Setup two work buffers in model required for solve()
   model->buffer.setup(model->numRow);
@@ -57,12 +51,6 @@ void HDual::solve(HModel *ptr_model, int variant, int num_threads)
   //Cannot solve box-constrained LPs
   if (model->numRow == 0)
     return;
-#ifdef JAJH_dev
-  printf("model->mlFg_Report() 2\n");
-  cout << flush;
-  model->mlFg_Report();
-  cout << flush;
-#endif
 
   model->timer.reset();
 
@@ -74,9 +62,6 @@ void HDual::solve(HModel *ptr_model, int variant, int num_threads)
   if (TimeLimitValue == 0)
   {
     TimeLimitValue = 1000000.0;
-#ifdef JAJH_dev
-    printf("Setting TimeLimitValue = %g\n", TimeLimitValue);
-#endif
   }
 
   // Initialise working environment
@@ -110,9 +95,6 @@ void HDual::solve(HModel *ptr_model, int variant, int num_threads)
     else if (EdWt_Mode == EdWt_Mode_DSE)
     {
     //Using dual steepest edge (DSE) weights
-#ifdef JAJH_dev
-      n_wg_DSE_wt = 0;
-#endif
       int numBasicStructurals = numRow - model->numBasicLogicals;
       if (numBasicStructurals > 0 && iz_DSE_wt)
       {
@@ -132,9 +114,6 @@ void HDual::solve(HModel *ptr_model, int variant, int num_threads)
           row_epDensity += 0.05 * row_ep.count / numRow;
         }
         IzDseEdWtTT = model->timer.getTime() - IzDseEdWtTT;
-#ifdef JAJH_dev
-        printf("Computed %d initial DSE weights in %gs\n", numRow, IzDseEdWtTT);
-#endif
         printf("solve:: %d basic structurals: computed %d initial DSE weights in %gs, %d, %d, %g\n",
                numBasicStructurals, numRow, IzDseEdWtTT, numBasicStructurals, numRow, IzDseEdWtTT);
       }
@@ -151,15 +130,6 @@ void HDual::solve(HModel *ptr_model, int variant, int num_threads)
   model->computeDual();
 
   //  printf("Solve: Computed dual\n");cout<<flush;
-
-#ifdef JAJH_dev
-  bool rp_bs_cond = false;
-  if (rp_bs_cond)
-  {
-    double bs_cond = an_bs_cond(ptr_model);
-    printf("Initial basis condition estimate is %g\n", bs_cond);
-  }
-#endif
 
   //  printf("HDual::solve - Calling model->computeDualInfeasInDual\n");cout<<flush;
   model->computeDualInfeasInDual(&dualInfeasCount);
@@ -209,23 +179,13 @@ void HDual::solve(HModel *ptr_model, int variant, int num_threads)
 
   while (solvePhase)
   {
-#ifdef JAJH_dev
-    int it0 = model->numberIteration;
-    //printf("HDual::solve Phase %d: Iteration %d; totalTime = %g; timer.getTime = %g\n", solvePhase, model->numberIteration, model->totalTime, model->timer.getTime());
-#endif
     switch (solvePhase)
     {
     case 1:
       solve_phase1();
-#ifdef JAJH_dev
-      n_ph1_du_it += (model->numberIteration - it0);
-#endif
       break;
     case 2:
       solve_phase2();
-#ifdef JAJH_dev
-      n_ph2_du_it += (model->numberIteration - it0);
-#endif
       break;
     case 4:
       break;
@@ -241,51 +201,9 @@ void HDual::solve(HModel *ptr_model, int variant, int num_threads)
       break;
   }
 
-#ifdef JAJH_dev
-  // Report the ticks before primal
-  if (dual_variant == HDUAL_VARIANT_PLAIN)
-  {
-    int reportList[] = {HTICK_INVERT, HTICK_CHUZR1, HTICK_BTRAN,
-                        HTICK_PRICE, HTICK_CHUZC1, HTICK_CHUZC2, HTICK_CHUZC3,
-                        HTICK_FTRAN, HTICK_FTRAN_MIX, HTICK_FTRAN_DSE,
-                        HTICK_UPDATE_DUAL, HTICK_UPDATE_PRIMAL, HTICK_UPDATE_WEIGHT,
-                        HTICK_UPDATE_FACTOR};
-    int reportCount = sizeof(reportList) / sizeof(int);
-    model->timer.report(reportCount, reportList);
-  }
-
-  if (dual_variant == HDUAL_VARIANT_TASKS)
-  {
-    int reportList[] = {HTICK_INVERT, HTICK_CHUZR1, HTICK_BTRAN,
-                        HTICK_PRICE, HTICK_CHUZC1, HTICK_CHUZC2, HTICK_CHUZC3,
-                        HTICK_FTRAN, HTICK_FTRAN_MIX, HTICK_FTRAN_DSE,
-                        HTICK_UPDATE_DUAL, HTICK_UPDATE_PRIMAL, HTICK_UPDATE_WEIGHT,
-                        HTICK_UPDATE_FACTOR, HTICK_GROUP1, HTICK_GROUP2};
-    int reportCount = sizeof(reportList) / sizeof(int);
-    model->timer.report(reportCount, reportList);
-  }
-
-  if (dual_variant == HDUAL_VARIANT_MULTI)
-  {
-    int reportList[] = {HTICK_INVERT, HTICK_CHUZR1, HTICK_BTRAN,
-                        HTICK_PRICE, HTICK_CHUZC1, HTICK_CHUZC2, HTICK_CHUZC3,
-                        HTICK_FTRAN, HTICK_FTRAN_MIX, HTICK_FTRAN_DSE,
-                        HTICK_UPDATE_DUAL, HTICK_UPDATE_PRIMAL, HTICK_UPDATE_WEIGHT,
-                        HTICK_UPDATE_FACTOR, HTICK_UPDATE_ROW_EP};
-    int reportCount = sizeof(reportList) / sizeof(int);
-    model->timer.report(reportCount, reportList);
-    printf("PAMI   %-20s    CUTOFF  %6g    PERSISTENSE  %6g\n",
-           model->modelName.c_str(), model->dblOption[DBLOPT_PAMI_CUTOFF],
-           model->numberIteration / (1.0 + multi_iteration));
-  }
-#endif
-
   if (model->problemStatus != LP_Status_OutOfTime)
   {
   // Use primal to clean up if not out of time
-#ifdef JAJH_dev
-    int it0 = model->numberIteration;
-#endif
     if (solvePhase == 4)
     {
       HPrimal hPrimal;
@@ -295,57 +213,9 @@ void HDual::solve(HModel *ptr_model, int variant, int num_threads)
       totalRebuildTime += hPrimal.totalRebuildTime;
       totalRebuilds += hPrimal.totalRebuilds;
     }
-#ifdef JAJH_dev
-    n_pr_it += (model->numberIteration - it0);
-#endif
   }
   // Save the solved results
   model->totalTime += model->timer.getTime();
-
-#ifdef JAJH_dev
-  if (n_ph1_du_it + n_ph2_du_it + n_pr_it != model->numberIteration)
-  {
-    printf("Iteration total error \n");
-  }
-  printf("Iterations [Ph1 %d; Ph2 %d; Pr %d] Total %d\n", n_ph1_du_it,
-         n_ph2_du_it, n_pr_it, model->numberIteration);
-  if (EdWt_Mode == EdWt_Mode_Dvx)
-  {
-    printf("Devex: n_dvx_fwk = %d; Average n_dvx_it = %d\n", n_dvx_fwk,
-           model->numberIteration / n_dvx_fwk);
-  }
-  if (rp_bs_cond)
-  {
-    double bs_cond = an_bs_cond(ptr_model);
-    printf("Optimal basis condition estimate is %g\n", bs_cond);
-  }
-  //  rp_hsol_sol(ptr_model);
-  ok = model->OKtoSolve(1, solvePhase);
-  if (!ok)
-  {
-    printf("NOT OK After Solve???\n");
-    cout << flush;
-  }
-  //  assert(ok);
-  printf("model->mlFg_Report() 9\n");
-  cout << flush;
-  model->mlFg_Report();
-  cout << flush;
-
-  printf("Time: Total inverts =  %4d; Total invert  time = %11.4g of Total time = %11.4g", model->totalInverts, model->totalInvertTime, model->totalTime);
-  if (model->totalTime > 0.001)
-    printf(" (%6.2f%%)\n", (100 * model->totalInvertTime) / model->totalTime);
-  else
-    printf("\n");
-  cout << flush;
-  printf("Time: Total rebuilds = %4d; Total rebuild time = %11.4g of Total time = %11.4g", totalRebuilds, totalRebuildTime, model->totalTime);
-  if (model->totalTime > 0.001)
-    printf(" (%6.2f%%)\n", (100 * totalRebuildTime) / model->totalTime);
-  else
-    printf("\n");
-  cout << flush;
-
-#endif
 }
 
 void HDual::init(int num_threads)
@@ -478,10 +348,6 @@ void HDual::solve_phase1()
   model->initBound(1);
   model->initValue();
   double lc_totalTime = model->totalTime + model->timer.getTime();
-#ifdef JAJH_dev
-  int lc_totalTime_rp_n = 0;
-  //	printf("DualPh1: lc_totalTime = %5.2f; Record %d\n", lc_totalTime, lc_totalTime_rp_n);
-#endif
   // Main solving structure
   for (;;)
   {
@@ -504,20 +370,8 @@ void HDual::solve_phase1()
       if (invertHint)
         break;
       //printf("HDual::solve_phase1: Iter = %d; Objective = %g\n", model->numberIteration, model->objective);
-      /*			if (model->objective > model->dblOption[DBLOPT_OBJ_UB]) {
-#ifdef SCIP_dev
-			  printf("HDual::solve_phase1: %g = Objective > dblOption[DBLOPT_OBJ_UB]\n", model->objective, model->dblOption[DBLOPT_OBJ_UB]);
-#endif
-			  model->problemStatus = LP_Status_ObjUB;
-                          break;
-			}
-			*/
     }
     lc_totalTime = model->totalTime + model->timer.getTime();
-#ifdef JAJH_dev
-    lc_totalTime_rp_n += 1;
-    //		printf("DualPh1: lc_totalTime = %5.2f; Record %d\n", lc_totalTime, lc_totalTime_rp_n);
-#endif
     if (lc_totalTime > TimeLimitValue)
     {
       SolveBailout = true;
@@ -595,10 +449,6 @@ void HDual::solve_phase2()
   // Collect free variables
   dualRow.create_Freelist();
   double lc_totalTime = model->totalTime + model->timer.getTime();
-#ifdef JAJH_dev
-  int lc_totalTime_rp_n = 0;
-  //	printf("DualPh2: lc_totalTime = %5.2f; Record %d\n", lc_totalTime, lc_totalTime_rp_n);
-#endif
   // Main solving structure
   for (;;)
   {
@@ -629,16 +479,8 @@ void HDual::solve_phase2()
       if (invertHint)
         break;
       model->computeDuObj();
-#ifdef JAJH_dev
-      double pr_obj_v = model->computePrObj();
-      printf("HDual::solve_phase2: Iter = %4d; Pr Obj = %.11g; Du Obj = %.11g\n",
-             model->numberIteration, pr_obj_v, model->objective);
-#endif
       if (model->objective > model->dblOption[DBLOPT_OBJ_UB])
       {
-#ifdef SCIP_dev
-      //printf("HDual::solve_phase2: Objective = %g > %g = dblOption[DBLOPT_OBJ_UB]\n", model->objective, model->dblOption[DBLOPT_OBJ_UB]);
-#endif
         model->problemStatus = LP_Status_ObjUB;
         SolveBailout = true;
         break;
@@ -650,10 +492,6 @@ void HDual::solve_phase2()
       SolveBailout = true;
       break;
     }
-#ifdef JAJH_dev
-    lc_totalTime_rp_n += 1;
-    printf("DualPh2: lc_totalTime = %5.2f; Record %d\n", lc_totalTime, lc_totalTime_rp_n);
-#endif
     if (lc_totalTime > TimeLimitValue)
     {
       model->problemStatus = LP_Status_OutOfTime;
@@ -719,9 +557,6 @@ void HDual::rebuild()
   // Save history information
   model->recordPivots(-1, -1, 0); // Indicate REINVERT
   model->timer.recordStart(HTICK_INVERT);
-#ifdef JAJH_dev
-  //	double tt0 = model->timer.getTime();
-#endif
   double tt0 = model->timer.getTime();
   int sv_invertHint = invertHint;
   invertHint = invertHint_no; // Was 0
@@ -774,10 +609,6 @@ void HDual::rebuild()
   double rebuildTime = model->timer.getTime() - tt0;
   totalRebuilds++;
   totalRebuildTime += rebuildTime;
-#ifdef JAJH_dev
-  printf("Dual  Ph%-2d rebuild %4d (%1d) on iteration %9d: Rebuild time = %11.4g; Total rebuild time = %11.4g\n",
-         solvePhase, totalRebuilds, sv_invertHint, model->numberIteration, rebuildTime, totalRebuildTime);
-#endif
   //Data are fresh from rebuild
   model->mlFg_haveFreshRebuild = 1;
 }
@@ -913,22 +744,8 @@ void HDual::chooseRow()
       double c_weight = dualRHS.workEdWt[rowOut] = row_ep.norm2();
       //For DSE compute the correct weight c_weight and use if to see how
       //accurate the updated weight is.
-#ifdef JAJH_dev
-      //			double DSE_wt_er = abs((u_weight - c_weight) / max(u_weight, c_weight));
-      //if (DSE_wt_er > 1e-2)
-      //			  printf(
-      //	 " !! JAJH RARE PRINT: Iter %d: DSE_wt_er = %8g = (%8g - %8g)/max(u_weight,c_weight)\n",
-      //	 model->numberIteration, DSE_wt_er, u_weight, c_weight);
-#endif
       if (u_weight >= 0.25 * c_weight)
         break;
-#ifdef JAJH_dev
-      //printf(
-      //       " !! JAJH RARE PRINT: Iter %d: DSE_wt_er = %8g from %8g, %8g with u_weight/c_weight = %g < 0.25\n",
-      //       model->numberIteration, DSE_wt_er, u_weight, c_weight,
-      //       u_weight / c_weight);
-      n_wg_DSE_wt += 1;
-#endif
     }
     else
     {

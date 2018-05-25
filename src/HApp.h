@@ -27,10 +27,6 @@
 //old mps reader
 //#include "HMPSIO.h"
 
-#ifdef EXT_PRESOLVE
-#include "core/Problem.hpp"
-#endif
-
 const int HiGHS_probStatusUnset = -1;
 const int HiGHS_probStatusOptimal = 0;
 const int HiGHS_probStatusInfeasible = 1;

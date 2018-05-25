@@ -201,13 +201,6 @@ public:
     void changeUpdate(int updateMethod);
     void setProblemStatus(int status);
 
-    // Checking methods
-#ifdef JAJH_dev
-    // Method to check code to load a model from arrays of data
-    void check_load_fromArrays();
-    void check_load_fromPostsolve();
-#endif
-
     //>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     // Esoterica!
     // Initialise the random vectors required by hsol
@@ -221,10 +214,6 @@ public:
 
     // Increment numberIteration (here!) and (possibly) store the pivots for debugging NLA
     void recordPivots(int columnIn, int columnOut, double alpha);
-#ifdef JAJH_dev
-    // Store and write out the pivots for debugging NLA
-    void writePivots(const char *suffix);
-#endif
     //<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
     // Utilities to get objective, solution and basis: all just copy what's there with no re-evaluation!
@@ -279,10 +268,6 @@ public:
     void util_reportModelDimensions();
     void util_reportModelObjSense();
     void util_reportModelStatus();
-#ifdef JAJH_dev
-    void util_reportModelDense();
-    void util_reportModelMPS(const char *filename);
-#endif
     void util_reportRowVec(int nrow, vector<double>& XrowLower, vector<double>& XrowUpper);
     void util_reportRowVecSol(int nrow, vector<double>& XrowLower, vector<double>& XrowUpper,
 			      vector<double>& XrowPrimal, vector<double>& XrowDual, vector<int>& XrowStatus);
@@ -465,12 +450,6 @@ public:
     HFactor factor;
     HVector buffer;
     HVector bufferLong;
-
-#ifdef JAJH_dev
-    vector<int> historyColumnIn;
-    vector<int> historyColumnOut;
-    vector<double> historyAlpha;
-#endif
 
     //Implied bounds from presolve
     vector<double> primalColLowerImplied;

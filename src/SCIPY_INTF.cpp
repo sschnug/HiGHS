@@ -117,13 +117,7 @@ void solve_fromArrays_mod(int *probStatus, int *basisStatus,
     LcBasisStatus = HiGHS_basisStatus_yes;
     if(verbose)
       model.util_reportSolverOutcome("Solve plain API");
-  // #ifdef JAJH_dev
-  //   model.util_reportModelDense();
-  // #endif
-    //  model.util_reportModel();
-    //  model.util_reportModelSolution();
 
-    //  printf("model.problemStatus = %d\n", model.problemStatus);
     (*probStatus) = model.problemStatus;
     (*basisStatus) = LcBasisStatus;
     // Remove any current model

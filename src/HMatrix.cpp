@@ -15,7 +15,7 @@ void HMatrix::setup(int numCol_, int numRow_, const int *Astart_,
   numCol = numCol_;
   numRow = numRow_;
   Astart.assign(Astart_, Astart_ + numCol_ + 1);
-  
+
   int AcountX = Astart_[numCol_];
   Aindex.assign(Aindex_, Aindex_ + AcountX);
   Avalue.assign(Avalue_, Avalue_ + AcountX);
@@ -66,9 +66,6 @@ void HMatrix::setup(int numCol_, int numRow_, const int *Astart_,
       }
     }
   }
-#ifdef JAJH_dev
-  assert(setup_ok(nonbasicFlag_));
-#endif
 }
 
 bool HMatrix::setup_ok(const int *nonbasicFlag_) {
@@ -101,11 +98,11 @@ void HMatrix::setup_lgBs(int numCol_, int numRow_, const int *Astart_,
   numCol = numCol_;
   numRow = numRow_;
   Astart.assign(Astart_, Astart_ + numCol_ + 1);
-  
+
   int AcountX = Astart_[numCol_];
   Aindex.assign(Aindex_, Aindex_ + AcountX);
   Avalue.assign(Avalue_, Avalue_ + AcountX);
-  
+
   // Build row copy - pointers
   ARstart.resize(numRow + 1);
   AR_Nend.assign(numRow, 0);
@@ -116,7 +113,7 @@ void HMatrix::setup_lgBs(int numCol_, int numRow_, const int *Astart_,
     ARstart[i] = ARstart[i - 1] + AR_Nend[i - 1];
   for (int i = 0; i < numRow; i++)
     AR_Nend[i] = ARstart[i];
-  
+
   // Build row copy - elements
   ARindex.resize(AcountX);
   ARvalue.resize(AcountX);

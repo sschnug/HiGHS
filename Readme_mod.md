@@ -156,3 +156,35 @@ Add scipy entry-point.
 
 ## Phase 4
 Removed folder /check
+
+## Phase 5
+Remove parallel code
+
+#### HDualMulti.cpp
+- removed
+
+## Phase 6
+Remove unneeded (dev-)code
+
+#### HAPI.cpp
+- #ifdef JAJH_dev removed
+
+#### HApp.h
+- #ifdef ext presolve removed
+
+#### HCrash.cpp
+- A LOT of #ifdef JAJH_dev removed
+
+#### HDual.cpp
+- A LOT of #ifdef JAJH dev removed
+
+#### HMatrix.cpp
+- #ifdef JAJH dev removed
+
+#### HModel.cpp
+- A LOT of #ifdef JAJH dev removed
+- some #ifdef H2DEBUG removed
+- some #ifdef SCIP_dev
+
+#### HPrimal.cpp
+- some #ifdef JAJH dev removed
