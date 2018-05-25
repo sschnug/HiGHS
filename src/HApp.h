@@ -15,7 +15,6 @@
 #include "HConst.h"
 #include "HDual.h"
 #include "HTimer.h"
-#include "HTester.h"
 #include "HPresolve.h"
 #include "HCrash.h"
 
