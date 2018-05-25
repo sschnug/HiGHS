@@ -1,6 +1,10 @@
 # Intro
 This fork will be trying to make HiGHS more portable for incorporation into other codebases. This might lead to removal of some unimportant code-parts and additional cleanups.
 
+# ToDo
+- Merge upstream changes
+- Test on minimal (no-boost) system
+
 # Phases
 
 ## Phase 1
@@ -80,3 +84,72 @@ with: ```gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.9)```
 - template bracketing
 - tuple-access
 - ifstream takes a const char*, not a string pre-C++11
+
+## Phase 2
+Remove MPS-readers.
+
+### HMpsFF.h
+The modern boost-based free-format reader needs ```#include <boost/iostreams/filtering_stream.hpp>```, which is **not header-only**.
+
+Additionally, the license information is unclear! This might be due to ```hopscotch_hash``` which looks replacable.
+
+### HMPSIO.h
+The fixed-format reader is of limited use.
+
+### Approach
+For now: remove both of them!
+
+This will lead to removal of the complete main-function!
+
+### Details
+
+#### Code changes
+
+##### HModel.cpp
+- removed ```#include "HMpsFF.h"```
+- removed ```#include "HMPSIO.h"```
+- removed ```#include "HToyIO.h"```
+- removed ```load_fromMps()```
+- removed ```load_fromToy()```
+
+#### HApp.h
+- removed ```#include "HTester.h"```
+
+#### HApp.cpp
+- removed ```HApp.cpp```
+  - main()
+
+#### HTester.h
+- removed
+
+#### HTester.cpp
+- removed
+
+#### HinOut.hpp
+- removed
+
+#### HinOut.cpp
+- removed
+
+#### HToyIO.h
+- removed
+
+#### HToyIO.cpp
+- removed
+
+#### HToyIO_C.h
+- removed
+
+#### ext/tessil/
+- removed
+
+## Phase 3
+Add scipy entry-point.
+
+### Details
+
+#### SCIPY_INTF.h
+- added
+
+#### SCIPY_INTF.cpp
+- added
